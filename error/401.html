@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>401 Unauthorized</title>
+    <style>
+        /* --- Basic Reset & Font --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a; /* Dark background */
+            color: #e0e0e0;           /* Light grey text */
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 16px;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- Terminal Window --- */
+        #terminal {
+            background-color: #0d0d0d; /* Slightly darker background for terminal */
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 25px;
+            width: 100%;
+            max-width: 800px; /* Max width for readability */
+            min-height: 300px; /* Min height */
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.1); /* Subtle orange/yellow glow */
+            overflow: hidden; /* Hide overflow during typing */
+            position: relative; /* For absolute positioning of elements if needed */
+        }
+
+        /* --- Terminal Output Area --- */
+        #output {
+            white-space: pre-wrap; /* Preserve whitespace and wrap lines */
+            word-wrap: break-word; /* Break long words */
+        }
+
+        /* --- Line Styles --- */
+        .prompt {
+            color: #ffa500; /* Orange prompt for variety */
+            user-select: none; /* Prevent selecting the prompt symbol */
+        }
+
+        .command {
+            color: #ffffff; /* White for typed commands */
+        }
+
+        .error {
+            color: #ff4d4d; /* Red for error messages */
+            font-weight: bold;
+        }
+
+        .info {
+            color: #87ceeb; /* Sky blue for info */
+        }
+
+        .path {
+            color: #ffff00; /* Yellow for paths/URLs */
+        }
+
+        .header {
+            color: #add8e6; /* Light blue for headers */
+        }
+
+
+        /* --- Blinking Cursor --- */
+        #cursor {
+            display: inline-block;
+            background-color: #ffa500; /* Orange cursor */
+            width: 10px;
+            height: 1.1em; /* Match line height */
+            margin-left: 5px;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+            opacity: 0; /* Initially hidden until typing finishes */
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* --- Make cursor visible class (added by JS) --- */
+        #cursor.visible {
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="terminal">
+        <div id="output"></div>
+        <span id="cursor"></span>
+    </div>
+
+    <script>
+        const outputElement = document.getElementById('output');
+        const cursorElement = document.getElementById('cursor');
+        // --- Updated content for 401 Unauthorized ---
+        const lines = [
+            { text: 'user@client:~# ', type: 'prompt' },
+            { text: 'curl -I ', type: 'command' }, // Using curl -I to fetch headers
+            { text: 'https://api.example.com/secure/resource', type: 'path' },
+            { text: '\n', type: 'newline' },
+            { text: 'Connecting to api.example.com...\n', type: 'info' },
+            { text: 'Sending request...\n', type: 'info' },
+            { text: 'Receiving response headers...\n\n', type: 'info' },
+            { text: '[ERROR] Authentication Required.\n\n', type: 'error' },
+            { text: 'HTTP/1.1 401 Unauthorized\n', type: 'error' }, // Status Line
+            { text: 'Server: nginx/1.20.1\n', type: 'header' }, // Example Header
+            { text: 'Date: ', type: 'header' },
+            { text: new Date().toUTCString() + '\n', type: 'info' }, // Dynamic Date
+            { text: 'WWW-Authenticate: Bearer realm="Restricted Content"\n', type: 'header' }, // Key 401 Header
+            { text: 'Content-Type: text/plain; charset=UTF-8\n\n', type: 'header' }, // Example Header
+            { text: 'Status: 401 Unauthorized\n', type: 'error' }, // Error Status
+            { text: 'Reason: Valid authentication credentials required. Access to the requested resource is denied without proper authorization (e.g., token, API key, login).\n\n', type: 'info' }, // Explanation
+            { text: 'Suggestion: Please provide valid credentials via the "Authorization" header or log in to gain access.\n\n', type: 'info' }, // Suggestion
+            { text: 'user@client:~# ', type: 'prompt' } // Final prompt
+        ];
+        // --- End of updated content ---
+
+        let lineIndex = 0;
+        let charIndex = 0;
+        let currentLineElement = null;
+        const typingSpeed = 30; // Milliseconds per character
+
+        function typeCharacter() {
+            if (lineIndex >= lines.length) {
+                cursorElement.classList.add('visible'); // Show cursor when done
+                return;
+            }
+
+            const currentLine = lines[lineIndex];
+
+            // Create a new span for the line if it doesn't exist or type changed
+            if (!currentLineElement || currentLineElement.dataset.type !== currentLine.type) {
+                if (currentLine.type === 'newline') {
+                    outputElement.appendChild(document.createTextNode('\n'));
+                    lineIndex++;
+                    charIndex = 0;
+                    currentLineElement = null; // Reset for the next line
+                    setTimeout(typeCharacter, typingSpeed * 2); // Pause slightly for newline
+                    return;
+                }
+                currentLineElement = document.createElement('span');
+                currentLineElement.classList.add(currentLine.type);
+                currentLineElement.dataset.type = currentLine.type; // Store type for comparison
+                outputElement.appendChild(currentLineElement);
+            }
+
+            // Add the next character
+            currentLineElement.textContent += currentLine.text[charIndex];
+            charIndex++;
+
+            // Move to next line or finish
+            if (charIndex >= currentLine.text.length) {
+                lineIndex++;
+                charIndex = 0;
+                currentLineElement = null; // Reset for the next line
+            }
+
+            // Scroll to bottom - ensures the typing is always visible
+            window.scrollTo(0, document.body.scrollHeight);
+            // Optional: Scroll terminal div instead if body scrolling is undesirable
+            // terminal.scrollTop = terminal.scrollHeight;
+
+
+            setTimeout(typeCharacter, typingSpeed);
+        }
+
+        // Start the typing effect
+        document.addEventListener('DOMContentLoaded', () => {
+           setTimeout(typeCharacter, 500); // Small delay before starting
+        });
+
+    </script>
+
+</body>
+</html>
