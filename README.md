@@ -9,35 +9,35 @@ A collection of single-file HTML error pages (400, 401, 403, 404, 503) styled to
 <br>
 *Simulates processing a request with invalid syntax.*
 <br>
-🔗 **[View Code](https://thecreategm.github.io/error-page/error/400.html)**
+🔗 **[View](https://thecreategm.github.io/error-page/error/400.html)**
 
 ### 401 Unauthorized
 ![401 Unauthorized Preview](error/401.png)
 <br>
 *Simulates attempting to access a resource without proper authentication credentials.*
 <br>
-🔗 **[View Code](https://thecreategm.github.io/error-page/error/401.html)**
+🔗 **[View](https://thecreategm.github.io/error-page/error/401.html)**
 
 ### 403 Forbidden
 ![403 Forbidden Preview](error/403.png)
 <br>
 *Simulates attempting to access a resource for which the authenticated user lacks permissions.*
 <br>
-🔗 **[View Code](https://thecreategm.github.io/error-page/error/403.html)**
+🔗 **[View](https://thecreategm.github.io/error-page/error/403.html)**
 
 ### 404 Not Found
 ![404 Not Found Preview](error/404.png)
 <br>
 *Simulates trying to access a resource or file that does not exist on the server.*
 <br>
-🔗 **[View Code](https://thecreategm.github.io/error-page/error/404.html)**
+🔗 **[View](https://thecreategm.github.io/error-page/error/404.html)**
 
 ### 503 Service Unavailable
 ![503 Service Unavailable Preview](error/503.png)
 <br>
 *Simulates a situation where the server is temporarily unable to handle the request (e.g., overload, maintenance).*
 <br>
-🔗 **[View Code](https://thecreategm.github.io/error-page/error/503.html)**
+🔗 **[View](https://thecreategm.github.io/error-page/error/503.html)**
 
 ## Features
 
